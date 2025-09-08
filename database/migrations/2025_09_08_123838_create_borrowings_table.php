@@ -24,7 +24,7 @@ return new class extends Migration
             $table->date('returned_date')->nullable();
             $table->timestamps();
 
-            $table->index(['member_id', 'book_id', 'borrow_date', 'due_date', 'returned_date']);
+            $table->index(['member_id', 'book_id']);
         });
     }
 
