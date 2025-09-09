@@ -25,9 +25,8 @@ class BookResource extends JsonResource
             "price" => $this->resource->price,
             "status" => $this->resource->status,
             "published_at" => $this->resource->published_at,
-            "author" => $this->whenLoaded('author', function () {
-                return new AuthorResource($this->resource->author);
-            }),
+            "author" => new AuthorResource($this->whenLoaded('author')),
+
         ];
     }
 }

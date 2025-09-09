@@ -14,13 +14,17 @@ class AuthorResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+
         return [
             'name' => $this->resource->name,
             'bio' => $this->resource->bio,
             'nationality' => $this->resource->nationality,
-            "books" => $this->whenLoaded('books', function () {
-                return $this->resource->books->count();
-            }),
+            "books" => $this->whenLoaded(
+                'books',
+                function ($books) {
+                    return $books->count();
+                }
+            ),
         ];
     }
 }

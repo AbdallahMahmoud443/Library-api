@@ -29,11 +29,13 @@ class Book extends Model
     /**
      * Decrements the available copies of the book by 1
      */
-    public function isAvailable(): void
+    public function isAvailable(): bool
     {
         if ($this->available_copies > 0) {
             $this->decrement('available_copies');
+            return true;
         }
+        return false;
     }
 
     /**

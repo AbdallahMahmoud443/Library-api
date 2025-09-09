@@ -23,7 +23,17 @@ class BookController extends Controller
     public function index(Request $request)
     {
         try {
-            $books = Book::query()->paginate(10);
+
+            $books = Book::with('author')->when($request->has('search'), function ($query) {
+                return $query->whereAny(['title', 'isbn', 'genre'], 'like', '%' . request()->search . '%');
+            })->whereHas(
+                'author',
+                function ($query) use ($request) {
+                    return $query->when($request->has('author'), function ($query) {
+                        return $query->where('name', 'like', '%' . request()->author . '%');
+                    });
+                }
+            )->paginate(10);
         } catch (\Throwable $th) {
             return new JsonResponse(
                 data: ['message' => $th->getMessage()],
@@ -43,14 +53,16 @@ class BookController extends Controller
             if ($request->hasFile('cover_image')) {
                 $validated_data['cover_image'] = $this->uploadCoverImage($request->file('cover_image'));
             }
+
             $book = Book::create($validated_data);
+            $book->load('author');
         } catch (\Throwable $th) {
             return new JsonResponse(
                 data: ['message' => $th->getMessage()],
                 status: Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
-        return   new BookResource($book)->toResponse($request);
+        return  new BookResource($book)->toResponse($request);
     }
 
     /**
