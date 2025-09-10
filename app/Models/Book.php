@@ -29,22 +29,24 @@ class Book extends Model
     /**
      * Decrements the available copies of the book by 1
      */
-    public function isAvailable(): bool
+    public function borrowingBook(): void
     {
         if ($this->available_copies > 0) {
             $this->decrement('available_copies');
-            return true;
         }
-        return false;
     }
 
     /**
      * Increments the available copies of the book by 1
      */
-    public function isReturned(): void
+    public function returningBook(): void
     {
         if ($this->available_copies < $this->total_copies) {
             $this->increment('available_copies');
         }
+    }
+    public function isAvailable(): bool
+    {
+        return $this->available_copies > 0;
     }
 }

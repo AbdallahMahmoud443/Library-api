@@ -32,11 +32,11 @@ class Member extends Model
     }
 
     /**
-     * Get the member's active borrowings.
+     * Get the member's borrowed books only.
      * @return HasMany<Borrowing>
      */
     public function activeBorrowings()
     {
-        return $this->borrowings()->where('status', 'active');
+        return $this->borrowings()->where('status', 'borrowed');
     }
 }
