@@ -45,8 +45,17 @@ class Book extends Model
             $this->increment('available_copies');
         }
     }
-    public function isAvailable(): bool
+
+    public function borrowingsCount(): int
     {
-        return $this->available_copies > 0;
+        return $this->borrowings()->where('status', 'borrowed')->count();
+    }
+
+    public function isAvailableCopies(): bool
+    {
+        if ($this->available_copies > 0) {
+            return true;
+        }
+        return false;
     }
 }

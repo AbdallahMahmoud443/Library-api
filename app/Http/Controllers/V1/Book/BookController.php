@@ -24,7 +24,7 @@ class BookController extends Controller
     {
         try {
 
-            $books = Book::with('author')->when($request->has('search'), function ($query) {
+            $books = Book::with('author','borrowings')->when($request->has('search'), function ($query) {
                 return $query->whereAny(['title', 'isbn', 'genre'], 'like', '%' . request()->search . '%');
             })->whereHas(
                 'author',

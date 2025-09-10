@@ -14,6 +14,7 @@ class BookResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+
         return [
             "title" => $this->resource->title,
             "isbn" => $this->resource->isbn,
@@ -22,10 +23,10 @@ class BookResource extends JsonResource
             "description" => $this->resource->description,
             "total_copies" => $this->resource->total_copies,
             "available_copies" => $this->resource->available_copies,
-            "is_available" => $this->resource->isAvailable(),
             "price" => $this->resource->price,
             "status" => $this->resource->status,
             "published_at" => $this->resource->published_at,
+            "borrowing_count" => $this->resource->borrowingsCount(),
             "author" => new AuthorResource($this->whenLoaded('author')),
 
         ];

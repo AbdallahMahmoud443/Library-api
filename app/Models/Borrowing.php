@@ -15,7 +15,7 @@ class Borrowing extends Model
 
     /** @var array<int,string> */
     protected $fillable = [
-        'user_id',
+        'member_id',
         'book_id',
         'borrow_date',
         'due_date',
@@ -47,6 +47,6 @@ class Borrowing extends Model
      */
     public function isOverdue(): bool
     {
-        return $this->due_date < (Carbon::today() && $this->status === 'borrowed');
+        return $this->due_date < Carbon::today() && $this->status === 'borrowed';
     }
 }

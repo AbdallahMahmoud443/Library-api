@@ -24,9 +24,14 @@ class MemberResource extends JsonResource
             "Total_borrowings" => $this->whenLoaded("borrowings", function ($borrowings) {
                 return $borrowings->count();
             }),
-            "active_borrow_books_count" => $this->whenLoaded("activeBorrowings", $this->resource->activeBorrowings->count()),
-            "active_borrowed_books" => $this->whenLoaded("activeBorrowings", function ($activeBorrowings) {
-                return BookResource::collection($activeBorrowings);
+
+            "active_borrow_books_count" => $this->when($this->relationLoaded("activeBorrowings"), function () {
+                return $this->activeBorrowings->count();
+            }),
+
+            "active_borrowed_books" => $this->when($this->relationLoaded("activeBorrowings"), function () {
+
+                return BookResource::collection($this->activeBorrowings->pluck("book"));
             }),
 
         ];
