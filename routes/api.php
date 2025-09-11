@@ -12,6 +12,8 @@ Route::prefix('v1')->group(
         Route::apiResource('authors', AuthorController::class);
         Route::apiResource('books', BookController::class);
         Route::apiResource('members', MemberController::class);
+        
+        Route::get('borrowings/overdue', [BorrowingController::class, 'overdueBorrowings']);
         Route::apiResource('borrowings', BorrowingController::class);
     }
 );

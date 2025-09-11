@@ -25,6 +25,7 @@ class BorrowingResource extends JsonResource
                 return new MemberResource($this->resource->member);
             }),
             "status" => $this->resource->status,
+            "is_overdue" => $this->resource->isOverdue(),
             "borrow_data" => $this->resource->borrow_date,
             "due_data" => $this->resource->due_date,
             "returned_data" => $this->resource->returned_date,

@@ -14,6 +14,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
+use function PHPUnit\Framework\isEmpty;
+
 class BorrowingController extends Controller
 {
     /**
@@ -96,12 +98,8 @@ class BorrowingController extends Controller
 
             $validated_date = $request->validated();
             $book = Book::find($validated_date['book_id']);
-
-
             $borrowing = Borrowing::where("id", $id)->first();
-
-            if ($validated_date['status'] == 'returned' || $validated_date['status'] == 'overdue') {
-
+            if ($validated_date['status'] == 'returned') {
                 $borrowing->update($validated_date);
                 $book->returningBook();
             }
@@ -120,7 +118,7 @@ class BorrowingController extends Controller
     public function destroy(string $id)
     {
         $borrowing = Borrowing::with(['book', 'member'])->find($id);
-        if ($borrowing->status == 'returned' || $borrowing->status == 'overdue') {
+        if ($borrowing->status == 'returned') {
             $borrowing->delete();
             return new JsonResponse(
                 data: ['message' => 'Borrowing Deleted Successfully'],
@@ -131,5 +129,23 @@ class BorrowingController extends Controller
             data: ['message' => 'Borrowing is not returned'],
             status: Response::HTTP_INTERNAL_SERVER_ERROR
         );
+    }
+    public function overdueBorrowings(Request $request)
+    {
+
+        Borrowing::where('status', 'borrowed')
+            ->where("due_date", "<=", now())
+            ->update(['status' => 'overdue']);
+
+        $overdueBorrowings = Borrowing::with(['book', 'member'])
+            ->where('status', 'overdue')->get();
+
+        if (empty($overdueBorrowings->toArray())) {
+            return new JsonResponse(
+                data: ['message' => 'No Overdue Borrowings'],
+                status: Response::HTTP_OK
+            );
+        }
+        return BorrowingResource::collection($overdueBorrowings)->toResponse($request);
     }
 }
